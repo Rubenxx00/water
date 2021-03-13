@@ -1,0 +1,21 @@
+{% load static %}
+<html>
+    <head>
+        <title>Watering system</title>
+    </head>
+    <body>
+        <button onclick="update()">leggi</button>
+        <div id='out'></div>
+        <br/>
+        <p>Ciao!</p>
+        {% block content %}
+        {% endblock %}
+    </body>
+    <script src="{% static 'sensors.js' %}"></script>
+    <script>
+        function update(){
+            var s = callSensorsAPI();
+            document.getElementById('out').innerHTML = s;
+        }
+    </script>
+</html>

@@ -1,0 +1,87 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+
+<img src="{% static 'drop.png' %}", alt='i file'>
+<div id="chart"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{{ last_reads|json_script:"mydata" }}
+<script>
+      const mydata = JSON.parse(document.getElementById('mydata').textContent);
+      var hum = [];
+      var temp = [];
+      mydata.forEach(function(x){
+        hum.push([Math.trunc(x.time)*1000, x.hum]);
+        temp.push([Math.trunc(x.time)*1000, x.temp]);
+      });
+        var options = {
+          series: [{
+          name: 'hum',
+          data: hum
+        },
+        {
+          name: 'temp',
+          data: temp
+        }],
+          chart: {
+          type: 'area',
+          stacked: false,
+          height: 350,
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: false
+          },
+          toolbar: {
+            autoSelected: 'zoom'
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        markers: {
+          size: 0,
+        },
+        title: {
+          text: 'Humidity',
+          align: 'left'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.5,
+            opacityTo: 0,
+            stops: [0, 90, 100]
+          },
+        },
+        yaxis: {
+          title: {
+            text: 'Temperature'
+          },
+          min: 5,
+          max: 90
+        },
+        xaxis: {
+          type: 'datetime',
+        },
+        tooltip: {
+          shared: false,
+          y: {
+            formatter: function (val) {
+              return (val / 1000000).toFixed(0)
+            }
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+</script>
+
+{% endblock %}
